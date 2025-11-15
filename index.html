@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
-    <title>SolveMate（搜脈君）週更報告：2025-11-11 ～ 2025-11-15</title>
+    <title>SolveMate（搜脈君）週更報告：2025-11-11 ～ 2025-11-16</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       :root {
@@ -132,6 +132,11 @@
         padding: 0.05rem 0.45rem;
         border-radius: 6px;
       }
+      .commit-summary {
+        margin: 0.4rem 0 0.2rem;
+        font-weight: 600;
+        color: var(--text);
+      }
       .commit ul {
         margin: 0.4rem 0 0;
         padding-left: 1.2rem;
@@ -140,11 +145,6 @@
       }
       .commit li + li {
         margin-top: 0.35rem;
-      }
-      .commit-summary {
-        margin: 0.4rem 0 0.2rem;
-        font-weight: 600;
-        color: var(--text);
       }
       .notes p {
         margin: 0.3rem 0;
@@ -172,19 +172,19 @@
   <body>
     <header>
       <h1>Student Chatbot 更新週報</h1>
-      <p>更新日期：星期三～星期日</p>
+      <p>本週重點：LLM 健康監控、教職員主控台與知識圖譜</p>
       <div class="stats">
         <div class="stat-card">
           <h4>Commits</h4>
-          <p>26</p>
+          <p>30</p>
         </div>
         <div class="stat-card">
           <h4>新增行數</h4>
-          <p>129,437</p>
+          <p>54,881</p>
         </div>
         <div class="stat-card">
           <h4>刪除行數</h4>
-          <p>6,741</p>
+          <p>9,566</p>
         </div>
         <div class="stat-card">
           <h4>主要作者</h4>
@@ -199,329 +199,216 @@
           <article>
             <h3>Agent D 異常偵測</h3>
             <ul>
-              <li>引入 <code>EngagementOutlier</code> schema、μ±3σ cron `/api/cron/agent-d/run` 以及 `CRON_KEY/AGENTD_*` 環境開關。</li>
-              <li>擴寫 `quizRagGenerator`、`summary.ts` 讓 quiz JSON、Reviewer hook 與 fallback 狀態一致。</li>
-              <li>新增 `/api/admin/outliers` 與前端 Outliers Panel，管理員可立即檢視最近的 fallback/異常。</li>
+              <li>導入 <code>EngagementOutlier</code> schema，並新增 cron `/api/cron/agent-d/run`，可針對最近 3 天的學習紀錄偵測出互動異常的學生。</li>
+              <li>Review 與摘要流程可以讀取最新的 outlier 記錄，後續會提供 Reviewer AI 與導師作為關懷依據。</li>
+              <li>新增 `/api/admin/outliers` 與 Outliers Panel，讓管理員可以在 Admin 後台過濾、分頁檢視與追蹤異常個案。</li>
             </ul>
           </article>
           <article>
-            <h3>Admin 監控與工具台</h3>
+            <h3>Admin 狀態與工具台</h3>
             <ul>
-              <li>`AdminApiStatus`、`BackendHealthPage`、`ChatMessageTools`、`OutliersPanel` 等元件重構整體儀表板。</li>
-              <li>`KnowledgeDiagnosePage`、`ProviderTrendsPage`、`LlmStatusWidget`、`LlmSimPage`、`RagQueriesPage`、`SystemBlueprintPage` 讓 24h 指標、模擬、藍圖一次到位。</li>
-              <li>`server/routes/apiRoutes.js`、`providerTestLog`、`llmSim`、`llmProvider` 全面擴充，支援趨勢/告警 API。</li>
+              <li>整理 `AdminApiStatus`、`BackendHealthPage`、`ChatMessageTools` 等元件結構，將 API 健康度、訊息查詢與 outlier 檢視集中在同一張總覽版面。</li>
+              <li>新增 `KnowledgeDiagnosePage`、`ProviderTrendsPage`、`LlmStatusWidget`、`LlmSimPage`、`RagQueriesPage`、`SystemBlueprintPage`，顯示 24 小時內的 LLM 呼叫趨勢、fallback 統計與知識圖結構診斷。</li>
+              <li>更新 `server/routes/apiRoutes.js` 與相關 utils，補齊 LLM 測試、模擬與記錄 API，讓 Admin 可以直接從前端觸發健康檢查。</li>
             </ul>
           </article>
           <article>
-            <h3>RAG 與知識星圖</h3>
+            <h3>RAG 與知識圖譜</h3>
             <ul>
-              <li>KnowledgeStructureGraph、AdminKnowledgeBase、DatasetWorkspace、RagDataset model、ingestion service 皆重新設計。</li>
-              <li>新增大量 starmap 匯出（indicator_map/edges、concept_hub、xlsx）供圖譜診斷。</li>
-              <li>Dataset overview / Document table / Ingestion monitor 卡片提供進件、chunk、狀態可視化。</li>
+              <li>完成 KnowledgeStructureGraph、AdminKnowledgeBase、DatasetWorkspace 以及 RagDataset model 與 ingestion service 的第一版整合，建立清楚的「單元 → chunk → 題目」對應關係。</li>
+              <li>建置大型 starmap 星圖（indicator_map / edges、concept_hub、xlsx 匯出），用來檢查單元前後關聯與測驗覆蓋度。</li>
+              <li>新增 Dataset overview / Document table / Ingestion monitor 卡片，讓 Admin 可以即時看到各資料集的文件數量、chunk 狀態與 ingestion queue 進度。</li>
             </ul>
           </article>
           <article>
             <h3>使用者體驗與文件</h3>
             <ul>
-              <li>完成 Google OAuth 串接（App、Header、SessionsSidebar、zh-TW 文案）。</li>
-              <li>Docs 擴充：DEPLOYMENT、新的 API/UI Map、Code Architecture、RemindAI & Mermaid Plan 等。</li>
-              <li>新增 RemindLanding、Engagement Settings、Reviewer Prompts 調整，準備 RAG→Remind 新流程。</li>
+              <li>完成 Google OAuth 串接流程（登入頁、Header、SessionsSidebar、zh-TW 文案），並修正相關錯誤畫面截圖與導回邏輯。</li>
+              <li>更新多份文件：`DEPLOYMENT.md`、API/UI 對照表、Code Architecture、RemindAI & Mermaid 設計等，確保開發與維運流程有清楚指引。</li>
+              <li>新增 RemindLanding、Engagement Settings 與 Reviewer Prompts 調整，將 RAG 測驗體驗與「提醒型教學」流程串成一條完整路徑。</li>
+            </ul>
+          </article>
+          <article>
+            <h3>教職員主控台與公告分眾</h3>
+            <ul>
+              <li>新增 `TeacherDashboard` 以及 `/teacher` 路由，提供教職員與管理員專用的總覽介面，可快速開啟成員清單（唯讀）與出題工具。</li>
+              <li>擴充 `AdminStudentsList`，加入角色篩選、班級 `classId` 欄位與「直接從列表修改班級」的操作，後端對應 `PATCH /api/admin/students/:id/class` 與 `GET /api/admin/classes`。</li>
+              <li>實作公告設定頁 `AnnouncementSettingsPage` 與前端 banner `AnnouncementBar`，支援 `scope`（all / classes / users / mixed）、班級與 Email 清單，儲存時若有不存在的 Email 會顯示錯誤並阻止儲存；同時整合 `/api/admin/llm/status`，在 Admin 頁面優先顯示 LLM 金鑰遺失或 fallback 警示。</li>
             </ul>
           </article>
         </div>
       </section>
+
       <section class="timeline">
-        <h2>逐日提交紀錄</h2>
+        <h2>每日交付紀錄</h2>
+
         <div class="day">
           <h3>2025-11-12（週三）</h3>
           <article class="commit">
             <div class="commit-header">
               <span>5fc2102</span><span>15:34</span><span>first commit</span>
             </div>
-            <p class="commit-summary">功能：初始化 React SPA 與 Node API 骨架，奠定聊天、測驗與 RAG 的基礎路由。</p>            <ul>
-              <li>`App.tsx`、`server/index.ts`、`server/routes/apiRoutes.js`：建立 React SPA + Node/Express API 骨架，串好聊天、測驗、RAG 的進入點，後續檔案只需掛功能即可服用。</li>
-              <li>`.github/workflows/*.yml`、`AGENTS.md`、`docs/*`、`testItem/2-1/*`：定義 CI、人員規範、部署說明與初始題庫，讓營運可以循流程上線。</li>
+            <p class="commit-summary">功能：建立 React SPA 與 Node API 骨架，奠定聊天、測驗與 RAG 的基本路由。</p>
+            <ul>
+              <li>`App.tsx`、`server/index.ts`、`server/routes/apiRoutes.js`：建立學生聊天 SPA 與 Node/Express API，統一路徑下接上 RAG 與測驗 API。</li>
+              <li>`.github/workflows/*.yml`、`AGENTS.md`、`docs/*`：整理 CI、開發規範與文件結構，確保後續功能都有清楚的測試與說明。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
-              <span>da14e3c</span><span>16:37</span><span>feat(agent-d): μ/σ outlier cron</span>
+              <span>da14e3c</span><span>16:37</span><span>feat(agent-d): add outlier cron</span>
             </div>
-            <p class="commit-summary">功能：完成 Agent D μ/σ 異常 cron 與 EngagementOutlier 寫入流程，啟動 outlier 管線。</p>            <ul>
-              <li>`server/models/EngagementOutlier.js`、`server/routes/apiRoutes.js`、`server/routes/summary.ts`：把 μ±3σ 異常邏輯包成 `/api/cron/agent-d/run`，分 dryRun/persist 寫入 `EngagementOutlier`，再由 summary API 給 Reviewer/報表使用。</li>
-              <li>`server/services/quizRagGenerator.js`、`components/QuizMessage.tsx`、`components/ChatInterface.tsx`：讓 quiz chunk、答案解析與 reviewer hook 同步顯示統計，確保異常資訊能回饋到聊天 UI。</li>
-              <li>`AGENTS.md`、`docs/20251112 plan.md`、`docs/summary-endpoints.md`：更新流程與 API 規格，明確描述 cron 觸發條件與返回欄位。</li>
+            <p class="commit-summary">功能：讓 Agent D 可以定期掃描互動紀錄並寫入 EngagementOutlier。</p>
+            <ul>
+              <li>`server/models/EngagementOutlier.js`、`server/routes/apiRoutes.js`、`server/routes/summary.ts`：新增異常紀錄模型，並實作 `/api/cron/agent-d/run` 支援 dryRun / persist。</li>
+              <li>`server/services/quizRagGenerator.js`、`components/QuizMessage.tsx`：將 quiz 解析與 reviewer hook 串進 outlier 流程，方便之後做關鍵題目回顧。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
               <span>390874a</span><span>16:54</span><span>feat(agent-d): admin outliers view</span>
             </div>
-            <p class="commit-summary">功能：提供 Admin 直接查詢異常紀錄的 outliers API，讓排查更即時。</p>            <ul>
-              <li>`server/routes/apiRoutes.js`：新增 `GET /api/admin/outliers`（支持多條件 filter + pagination），讓 Admin 工具台可以直接查詢最新異常紀錄。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>4cefe57</span><span>21:58</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：重構聊天/測驗 UI 並補齊訊息、測驗、單元上傳等 API，串完整學習流程。</p>            <ul>
-              <li>`AGENTS.md`、`components/ChatInterface.tsx`、`components/chat/SessionsSidebar.tsx`、`components/QuizMessage.tsx`：重構學生對話與測驗流程，明確區分聊天消息與 quiz card 邏輯。</li>
-              <li>`server/routes/chat-message.ts`、`chat-quiz.ts`、`test-items.ts`、`units-upload.ts`、`server/services/units-loader.ts`：實作訊息儲存、測驗 API、單元上傳與 CSV 解析，讓 Admin 能匯入/取回測驗資料。</li>
-              <li>`docs/DEPLOYMENT.md`、`docs/units-csv.md`、多份教材 PDF：補完部署與單元欄位說明，確保內容團隊有範例可以跟著操作。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>032eceb</span><span>22:21</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：擴充 Admin API 設定欄位與文案，方便輸入多個 provider 金鑰。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`、`tmp_AdminApiSettings.txt`：新增 LLM provider 輸入欄位與文案草稿，方便之後串接 fallback 預設值。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>6217cd6</span><span>23:43</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：修正 Admin API 設定受控表單的 state 行為，避免切換 provider 時覆寫資料。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`：修正受控表單的 state 綁定，避免切換 provider 時把舊值覆寫掉。</li>
+            <p class="commit-summary">功能：在 Admin 後台提供 outliers 檢視頁，方便追蹤與匯出。</p>
+            <ul>
+              <li>`server/routes/apiRoutes.js`：新增 `GET /api/admin/outliers`，支援條件篩選與分頁。</li>
+              <li>`components/admin/OutliersPanel.tsx`：建立對應的表格與過濾 UI，方便導師搜尋特定學生或時間區間。</li>
             </ul>
           </article>
         </div>
+
         <div class="day">
           <h3>2025-11-13（週四）</h3>
           <article class="commit">
             <div class="commit-header">
               <span>0baf4e2</span><span>01:52</span><span>update</span>
             </div>
-            <p class="commit-summary">功能：微調 API 設定按鈕與開關邏輯，降低 fallback 參數誤觸風險。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`：細調按鈕/開關邏輯，確保 fallback toggles 與 input 顯示一致，降低誤設定風險。</li>
+            <p class="commit-summary">功能：優化 Admin API 設定表單，降低誤觸 fallback 參數的風險。</p>
+            <ul>
+              <li>`components/AdminApiSettings.tsx`：重構 Provider / Model / Key 欄位排版，針對 fallback 相關選項加上更明顯的說明與預設值。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
               <span>eab5f01</span><span>02:21</span><span>update</span>
             </div>
-            <p class="commit-summary">功能：同步 Admin 表單與聊天/單元頁流程並加入 tsconfig 語法檢查。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`、`components/ChatInterface.tsx`、`components/admin/AdminUnitsPage.tsx`：同步表單與 Admin 單元頁交互，並新增 `tsconfig.syntaxcheck.json` 以 TypeScript 檢查提升穩定度。</li>
+            <p class="commit-summary">功能：補上型別檢查與基礎語法檢查，避免 Admin 表單在編譯期就壞掉。</p>
+            <ul>
+              <li>`components/AdminApiSettings.tsx`、`components/ChatInterface.tsx`、`components/admin/AdminUnitsPage.tsx`：整理 props 與 state 型別，並新增 `tsconfig.syntaxcheck.json` 做快速 TS 檢查。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
-              <span>2b89f02</span><span>03:05</span><span>update</span>
+              <span>617201a</span><span>05:12</span><span>google oauth</span>
             </div>
-            <p class="commit-summary">功能：重新排序設定欄位與 placeholder，指引營運依優先序填金鑰。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`：重新排序 provider 欄位與 placeholder，讓 Admin 依優先順序配置金鑰。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>a133e59</span><span>04:18</span><span>google outh</span>
-            </div>
-            <p class="commit-summary">功能：整理 Google OAuth 失敗畫面，供除錯與體驗檢討。</p>            <ul>
-              <li>`error/20251113/*.png`：提交 OAuth 例外截圖，方便追蹤 redirect/domain 設定與 UI 動線問題。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>617201a</span><span>05:12</span><span>google outh</span>
-            </div>
-            <p class="commit-summary">功能：正式接上 Google OAuth 登入，旅客可登入並同步會話。</p>            <ul>
-              <li>`App.tsx`、`components/Header.tsx`、`components/chat/SessionsSidebar.tsx`：串上 Google OAuth 流程，旅客可登入後同步歷史對話。</li>
-              <li>`i18n/locales/zh-TW.ts`：補上登入/授權相關文案，保持多語一致。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>a887e92</span><span>05:28</span><span>上傳</span>
-            </div>
-            <p class="commit-summary">功能：更新部署指引與入口樣式，支援新 OAuth 流程。</p>            <ul>
-              <li>`docs/DEPLOYMENT.md`、`public/index.css`：更新部署步驟與 landing 樣式，確保 OAuth 與新版樣式說明同步。</li>
+            <p class="commit-summary">功能：導入 Google OAuth，讓學生可以用 Google 帳號登入並保留歷史對話。</p>
+            <ul>
+              <li>`App.tsx`、`components/Header.tsx`、`components/chat/SessionsSidebar.tsx`：接上 Google OAuth 登入流程與 session 清單，並處理登入後的導流。</li>
+              <li>`i18n/locales/zh-TW.ts`：補齊登入相關的 zh-TW 文案與錯誤訊息。</li>
             </ul>
           </article>
         </div>
+
         <div class="day">
           <h3>2025-11-14（週五）</h3>
           <article class="commit">
             <div class="commit-header">
               <span>4450166</span><span>01:41</span><span>page update</span>
             </div>
-            <p class="commit-summary">功能：打造新版 Admin 儀表板與測試工具，並補齊 LLM/Graph 文件。</p>            <ul>
-              <li>`AGENTS.md`、`components/AdminApiStatus.tsx`、`components/admin/OutliersPanel.tsx`、`components/admin/QuizGenerateTester.tsx`：重構 Admin 儀表板，加入 LLM 狀態、fallback 告警與題目測試工具。</li>
-              <li>`docs/DEV-TESTS.md`、`docs/LLM-and-Graph-Plan.md`、`docs/UI-NOTES.md`、`docs/units-tags.md`：同步測試規範與圖譜計畫，讓 PM/QA 可比對頁面。</li>
-              <li>`server/routes/apiRoutes.js`、`server/services/knowledge-graph.js`、`server/utils/llmProvider.js`：後端支援新頁面所需的 LLM 指標與圖譜資料。</li>
+            <p class="commit-summary">功能：整理 Admin 儀表板資訊架構，加入 LLM 狀態與 Graph 相關頁面。</p>
+            <ul>
+              <li>`AGENTS.md`、`components/AdminApiStatus.tsx`、`components/admin/OutliersPanel.tsx`、`components/admin/QuizGenerateTester.tsx`：調整版面與說明文字，讓 Admin 可以更快找到常用工具。</li>
+              <li>`docs/DEV-TESTS.md`、`docs/LLM-and-Graph-Plan.md`、`docs/UI-NOTES.md`、`docs/units-tags.md`：更新測試清單與知識圖規格，方便之後擴充。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
               <span>e2478c5</span><span>03:01</span><span>update</span>
             </div>
-            <p class="commit-summary">功能：新增 Knowledge Diagnose、Provider Trends 頁與相應診斷 API。</p>            <ul>
-              <li>`App.tsx`、`components/admin/KnowledgeDiagnosePage.tsx`、`components/admin/ProviderTrendsPage.tsx`：新增診斷與供應商趨勢頁，顯示 24h fallback 與缺失節點。</li>
-              <li>`docs/ADMIN-ROUTES.md`、`docs/DEV-TESTS-addendum.md`、`docs/P2-PLAN.md`、`server/utils/providerTestLog.js`：定義路由、測試清單與 provider log schema。</li>
-              <li>`server/routes/apiRoutes.js`：增加 240 行診斷 API，為新頁面提供資料。</li>
+            <p class="commit-summary">功能：新增 Knowledge Diagnose 與 Provider Trends 頁面，打通 LLM 健康診斷鏈。</p>
+            <ul>
+              <li>`App.tsx`、`components/admin/KnowledgeDiagnosePage.tsx`、`components/admin/ProviderTrendsPage.tsx`：加入對應路由與版面，聚焦 24 小時內的 fallback / error 走勢。</li>
+              <li>`docs/ADMIN-ROUTES.md`、`docs/DEV-TESTS-addendum.md`、`docs/P2-PLAN.md`、`server/utils/providerTestLog.js`：補上 API 路由與 provider 測試 log 的結構說明。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
               <span>96e718c</span><span>03:08</span><span>update</span>
             </div>
-            <p class="commit-summary">功能：加入 LLM 模擬、狀態小工具、RAG 查詢與系統藍圖介面。</p>            <ul>
-              <li>`components/admin/LlmSimPage.tsx`、`components/admin/LlmStatusWidget.tsx`、`components/admin/RagQueriesPage.tsx`、`components/admin/SystemBlueprintPage.tsx`：建置模擬、查詢、系統藍圖頁，展示 LLM 延遲、RAG 搜索與節點架構。</li>
-              <li>`server/routes/apiRoutes.js`、`server/utils/llmSim.js`、`server/utils/llmProvider.js`：新增模擬/查詢 API 與 provider 指標欄位，支援上述頁面。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>70de35b</span><span>03:20</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：在 Admin API 設定/狀態頁補上 fallback 警示與輸入欄位。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`、`components/AdminApiStatus.tsx`、`components/AdminDashboard.tsx`：補上 fallback provider 輸入與警示條，Dashboard 可即時顯示缺 key 狀態。</li>
-              <li>`docs/DEV-TESTS-addendum.md`：記錄新設定流程的測試步驟。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>1462c2d</span><span>03:22</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：強化 Provider Trends 與 API 設定的說明與篩選條件。</p>            <ul>
-              <li>`components/AdminApiSettings.tsx`、`components/admin/ProviderTrendsPage.tsx`：加入 provider 篩選與說明，確保趨勢圖與設定面板一致。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>749a509</span><span>12:23</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：調整 Dashboard、告警條與圖譜/藍圖版面來呈現 provider latency。</p>            <ul>
-              <li>`components/AdminDashboard.tsx`、`components/AnnouncementBar.tsx`、`components/admin/LlmStatusWidget.tsx`：調整卡片佈局與告警條，反映 provider latency 走勢。</li>
-              <li>`components/KnowledgeStructureGraph.tsx`、`components/admin/SystemBlueprintPage.tsx`：重新繪製節點樣式與 blueprint layout，強化關聯閱讀性。</li>
-              <li>`server/routes/apiRoutes.js`、`server/utils/providerTestLog.js`、`tmp_full_KSG.txt`：擴充 API 傳回圖譜/趨勢資料並保存快照。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>61383b8</span><span>12:39</span><span>update</span>
-            </div>
-            <p class="commit-summary">功能：重寫 Admin API 狀態與 Dataset Workspace，並導入 starmap 匯出資料。</p>            <ul>
-              <li>`components/AdminApiStatus.tsx`、`components/admin/knowledge-base/DatasetWorkspace.tsx`：重寫 API 狀態卡與 dataset 管控流程，讓 ingestion 與權限檢視更直覺。</li>
-              <li>`starmap/exports/*`、`server/services/knowledge-graph.js`、`server/services/ragIngestionService.js`：把 indicator/concept/edge 匯出導入 graph 服務，支援更細緻的診斷。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>ab47674</span><span>16:15</span><span>RAG</span>
-            </div>
-            <p class="commit-summary">功能：實作 Admin Knowledge Base 卡片、RagDataset schema 與 ingestion API。</p>            <ul>
-              <li>`components/AdminKnowledgeBase.tsx`、`components/KnowledgeStructureGraph.tsx`、`hooks/useKnowledgeBaseDashboard.ts`：建立 dataset 管理卡片、graph filters 與 hook，支援多資料集同時監控。</li>
-              <li>`server/models/RagDataset.js`、`server/services/ragIngestionService.js`、`server/routes/apiRoutes.js`：新增 dataset schema 與 ingestion queue API，讓後台能追蹤文件進度。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>4d4dba6</span><span>17:26</span><span>RAG</span>
-            </div>
-            <p class="commit-summary">功能：重構 llmProvider pool，拆分 token 配額、fallback 與指標。</p>            <ul>
-              <li>`server/utils/llmProvider.js`：大幅重構 provider pool，分離 token 配額、指標紀錄與 fallback routing，減少重複碼。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>45797eb</span><span>17:48</span><span>RAG</span>
-            </div>
-            <p class="commit-summary">功能：同步 README、Admin 設定/狀態與 Graph 文件，維護 RAG/LLM 一致性。</p>            <ul>
-              <li>`README.md`、`components/AdminApiSettings.tsx`、`components/AdminApiStatus.tsx`、`components/AdminDashboard.tsx`：更新文件與 UI，確保 RAG/LLM 流程說明同步。</li>
-              <li>`components/KnowledgeStructureGraph.tsx`、`docs/knowledge-base-admin.md`：調整 graph 推疊方式，並在文件中補上操作手冊。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>d700d9c</span><span>18:50</span><span>RAG</span>
-            </div>
-            <p class="commit-summary">功能：把 RAG 選單與圖譜狀態接到聊天介面並更新計畫文件。</p>            <ul>
-              <li>`components/ChatInterface.tsx`、`components/KnowledgeStructureGraph.tsx`：將 RAG 選單與圖譜即時狀態整合到學生側介面，方便測試。</li>
-              <li>`docs/LLM-and-Graph-Plan.md`、`docs/UI-NOTES.md`、`server/routes/apiRoutes.js`、`server/services/knowledge-graph.js`：文件與 API 一起更新，詳述節點計算邏輯。</li>
+            <p class="commit-summary">功能：補齊 LLM 模擬測試、RAG 查詢與系統藍圖的前後端 API。</p>
+            <ul>
+              <li>`components/admin/LlmSimPage.tsx`、`components/admin/LlmStatusWidget.tsx`、`components/admin/RagQueriesPage.tsx`、`components/admin/SystemBlueprintPage.tsx`：提供可視化的 LLM 模擬結果與 RAG 查詢紀錄。</li>
+              <li>`server/routes/apiRoutes.js`、`server/utils/llmSim.js`、`server/utils/llmProvider.js`：實作對應 API 與 provider 抽象層。</li>
             </ul>
           </article>
         </div>
+
         <div class="day">
           <h3>2025-11-15（週六）</h3>
           <article class="commit">
             <div class="commit-header">
               <span>55a4036</span><span>09:03</span><span>RAG</span>
             </div>
-        <div class="day">
-          <h3>2025-11-14（五）</h3>
-          <article class="commit">
-            <div class="commit-header">
-              <span>fa35e09</span><span>14:12</span><span>update（SolveMate 初次品牌化）</span>
-            </div>
-            <p class="commit-summary">前端初步將 Student Chatbot 視覺導向 SolveMate，調整登入頁、聊天頁與週報樣式。</p>
+            <p class="commit-summary">功能：補完 RemindLanding 與資料圖譜 CTA，連結 RAG 體驗。</p>
             <ul>
-              <li>更新 `components/ChatInterface.tsx` chat header 與空狀態，為後續搜脈君角色與測驗卡片鋪路。</li>
-              <li>修正 `docs/weekly-update-2025-11-08-15.html` 本身的 HTML 結構（closed tag / section 邏輯），確保之後週更可以延續使用。</li>
+              <li>`App.tsx`、`components/RemindLanding.tsx`、`hooks/useRemindLanding.ts`：建立 Remind 專用 landing，將圖譜與測驗結果導回具體 CTA。</li>
+              <li>`docs/API_AND_UI_MAP_2025-11.md`、`docs/CODE_ARCHITECTURE_OVERVIEW_2025-11.md`、`docs/RemindAI-and-Mermaid-Plan.md`：更新架構圖與流程說明。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
-              <span>911dc8a</span><span>15:03</span><span>closed tag error</span>
+              <span>4563bf5</span><span>10:20</span><span>SolveMate branding</span>
             </div>
-            <p class="commit-summary">收斂週報 DOM 結構與 Admin Dashboard 卡片，避免渲染錯位。</p>
+            <p class="commit-summary">功能：前後端視覺全面收斂為 SolveMate 品牌。</p>
             <ul>
-              <li>修正 `components/AdminDashboard.tsx` 部分卡片 closing tag，搭配週報頁面結構測試。</li>
-              <li>再次盤點 weekly update 區塊，確認 timeline / highlight / notes 三大區塊語意標籤正確。</li>
-            </ul>
-          </article>
-        </div>
-        <div class="day">
-          <h3>2025-11-15（六）</h3>
-          <article class="commit">
-            <div class="commit-header">
-              <span>4563bf5</span><span>10:20</span><span>Solver Mate</span>
-            </div>
-            <p class="commit-summary">正式導入 SolveMate：搜脈 品牌與「搜脈君」聊天角色。</p>
-            <ul>
-              <li>將登入頁、標題列、metadata 與 favicon 更新為 SolveMate 品牌（`components/Login.tsx`、`components/Header.tsx`、`index.html`、`public/logo-512.png`）。</li>
-              <li>新增聊天機器人頭像與 SolveMate glyph（`components/Message.tsx`、`components/icons/index.tsx`），在學生視角出現「搜脈君」。</li>
-              <li>在 ChatInterface 空狀態顯示品牌卡，解釋「搜脈 = 陪你一起，把數學的脈絡搜出來。」</li>
+              <li>`components/Login.tsx`、`components/Header.tsx`、`index.html`、`public/logo-512.png`：更新登入畫面、標題列與 favicon，統一 SolveMate 名稱與圖示。</li>
+              <li>`components/Message.tsx`、`components/icons/index.tsx`：新增 SolveMate glyph 與訊息頭像，讓學生在對話中能一眼看出是「搜脈君」回覆。</li>
             </ul>
           </article>
           <article class="commit">
             <div class="commit-header">
-              <span>6969724</span><span>17:37</span><span>Type Error Correction ＋ Docs 整理</span>
+              <span>6969724</span><span>17:37</span><span>Type & docs cleanup</span>
             </div>
-            <p class="commit-summary">收斂型別錯誤與文件結構，補齊 SolveMate 品牌敘事與知識庫流程。</p>
+            <p class="commit-summary">功能：清理型別錯誤與文件舊字眼，確保 SolveMate 命名一致。</p>
             <ul>
-              <li>修正 Admin API 設定與 LLM 狀態頁中的型別錯誤與文案（`components/AdminApiSettings.tsx`、`components/AdminApiStatus.tsx`）。</li>
-              <li>更新 `README.md` 與 `docs/README.md`，明確標示本專案為 SolveMate（搜脈君）學生聊天機器人，移除舊的範例導向文字。</li>
-              <li>新增 `docs/knowledge-base-playbook.md` 整合知識庫與 RAG console 流程，並將舊稿移到 `docs/outdated/` 以簡化維護範圍。</li>
-              <li>同步 i18n 與 dashboard hooks，讓 Admin 介面出現 SolveMate / 搜脈君 的最新措辭。</li>
+              <li>`components/AdminApiSettings.tsx`、`components/AdminApiStatus.tsx`：修正 Admin API 設定/狀態頁的型別與 props 錯誤。</li>
+              <li>`README.md`、`docs/README.md`、`docs/knowledge-base-playbook.md`：整理專案說明與知識庫操作手冊，並把舊文件移到 `docs/outdated/`。</li>
+            </ul>
+          </article>
+          <article class="commit">
+            <div class="commit-header">
+              <span>40bfb7c</span><span>22:54</span><span>Teacher console & announcements</span>
+            </div>
+            <p class="commit-summary">功能：導入教職員主控台、班級欄位與公告分眾，讓老師也能直接掌握狀態。</p>
+            <ul>
+              <li>`App.tsx`、`components/TeacherDashboard.tsx`、`components/Header.tsx`：新增 `/teacher` 體驗，提供教職員專用入口，整合成員清單、出題測試與 LLM 健康摘要。</li>
+              <li>`components/AdminStudentsList.tsx`：新增角色篩選、`classId` 顯示與「從清單直接修改班級」功能，對應 `PATCH /api/admin/students/:id/class`、`GET /api/admin/students` 與 `GET /api/admin/classes`。</li>
+              <li>`components/admin/AnnouncementSettingsPage.tsx`、`components/AnnouncementBar.tsx`：實作公告設定與前端 banner，支援依班級與 Email 分眾；並在 Admin 頁面上方顯示 LLM 金鑰遺失與 fallback 警示（整合 `/api/admin/llm/status`）。</li>
             </ul>
           </article>
         </div>
 
-            <p class="commit-summary">功能：推出 RemindLanding 與相關文件，將 RAG 測驗輸出轉成 CTA。</p>            <ul>
-              <li>`App.tsx`、`components/RemindLanding.tsx`、`hooks/useRemindLanding.ts`：新增 Remind 行銷頁與 hook，把 RAG 測驗結果轉為 CTA。</li>
-              <li>`docs/API_AND_UI_MAP_2025-11.md`、`docs/CODE_ARCHITECTURE_OVERVIEW_2025-11.md`、`docs/RemindAI-and-Mermaid-Plan.md`：整理架構與流程圖，並清掉舊 tmp 檔。</li>
-            </ul>
-          </article>
+        <div class="day">
+          <h3>2025-11-16（週日）</h3>
           <article class="commit">
             <div class="commit-header">
-              <span>ec557ad</span><span>15:45</span><span>RAG</span>
+              <span>7b69fb8</span><span>04:55</span><span>announcement & ingestion polish</span>
             </div>
-            <p class="commit-summary">功能：調整 Engagement/Reviewer 設定與 System Blueprint，串連提醒→審題。</p>            <ul>
-              <li>`components/AdminEngagementSettings.tsx`、`components/AdminReviewerPrompts.tsx`、`components/ReviewerPromptModal.tsx`、`components/admin/SystemBlueprintPage.tsx`：調整提示輸入、slider 與藍圖顯示，確保提醒→審題→RAG 串流一致。</li>
-              <li>`docs/LLM-and-Graph-Plan.md`：標註 fallback provider 現況，給營運決策。</li>
-            </ul>
-          </article>
-          <article class="commit">
-            <div class="commit-header">
-              <span>b0b8ce7</span><span>16:04</span><span>RAG</span>
-            </div>
-            <p class="commit-summary">功能：新增 dataset overview / document / ingestion 卡片監控知識庫進度。</p>            <ul>
-              <li>`components/AdminKnowledgeBase.tsx`、`components/admin/knowledge-base/DatasetOverviewCard.tsx`、`DocumentTableCard.tsx`、`IngestionMonitorCard.tsx`：新增 dataset overview、文件表與 ingestion monitor 卡片，顯示 chunk 數、錯誤與隊列狀態。</li>
+            <p class="commit-summary">功能：微調公告設定與 RAG ingestion pipeline，補上錯誤處理與欄位檢查。</p>
+            <ul>
+              <li>`components/admin/AnnouncementSettingsPage.tsx`：調整表單 state 控制與錯誤顯示，確保 scope、班級與 Email 欄位在儲存前都有完整檢查。</li>
+              <li>`components/AdminApiSettings.tsx`：同步優化 provider / 模型設定的提示文字與預設值，讓 Admin 比較不容易誤設 fallback 或錯誤的 key。</li>
+              <li>`server/routes/apiRoutes.js`、`server/services/ragIngestionService.js`、`server/utils/rag.js`：整理 ingestion API 與 helper，減少重複邏輯並補上 edge case 的錯誤處理。</li>
             </ul>
           </article>
         </div>
+      </section>
+
+      <section class="notes">
+        <h2>備註與後續方向</h2>
+        <p>1. LLM Fallback 與狀態 API 已可回報 24 小時內的呼叫量、fallback 次數與錯誤類型，後續會再補上更多圖表與警示等級。</p>
+        <p>2. 教職員主控台目前聚焦在「看得到但改不動」的工具（成員清單、LLM 狀態、出題測試），所有權限敏感的操作仍需經由 Admin Dashboard。</p>
+        <p>3. 公告分眾邏輯已串上 `settings.announcement` 與 `/api/announcement`，接下來會依實際使用狀況調整 UI 與文案。</p>
+        <p class="footnote">本週報僅涵蓋 2025-11-11 ～ 2025-11-16 的主要變更，詳細 API 與前端設計請參考專案內的 docs/* 檔案。</p>
       </section>
     </main>
   </body>
